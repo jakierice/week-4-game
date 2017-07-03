@@ -29,36 +29,99 @@ var eagles = {
     }
 }
 
-function buildEagle() {
+function setupFight(attacker) {
+    console.log(attacker);
+    // $('#donHenley').hide();
+    $.each(eagles, function (eagle, info) {
+        if (eagle !== attacker) {
+            $('#' + eagle + 'Holder').appendTo('#remainingEnemies');
+        } else {
+            var chosenCharacter = {
+                holder: $('<div></div>'),
+                name: $('<h1></h1>'),
+                health: $('<h4></h4>'),
+                attack: $('<h2></h2>'),
+                pic: $('<img>')
+            }
+
+            // $('#' + eagle).removeClass('col-xs-6 col-sm-3');
+            // $('#' + eagle).addClass('col-xs-12');
+
+            // $('#' + eagle).children().empty();
+
+            // chosenCharacter.name.append(
+            //     attacker.name,
+            //     chosenCharacter.health,
+            //     chosenCharacter.attack
+            // )
+            //     .removeClass('col-xs-6 col-sm-12')
+            //     .addClass('col-xs-6');
+
+            // chosenCharacter.health.append(attacker.health);
+            // chosenCharacter.pic
+            //     .attr('src', attacker.pic)
+            //     .addClass('col-xs-6')
+
+            // chosenCharacter.holder.append(
+            //     chosenCharacter.name,
+            //     chosenCharacter.pic
+            // )
+            //     .addClass('col-xs-6 eagle');
+
+            $('#' + eagle + 'Holder').removeClass('col-xs-6 col-sm-3');
+            $('#' + eagle + 'Holder').addClass('col-xs-12');
+
+            $('#' + eagle + 'Name').toggleClass('col-xs-6');
+            $('#' + eagle + 'Pic').toggleClass('col-xs-6');
+
+            $('#characters').append(chosenCharacter.holder)
+                .toggleClass('col-xs-6');
+        }
+    });
+
+
+}
+
+function chooseEagle() {
 
     $.each(eagles, function (eagle, info) {
         var character = {
-            main: $('<div></div>'),
+            holder: $('<div></div>'),
             name: $('<h1></h1>'),
             health: $('<h4></h4>'),
             pic: $('<img>')
         }
 
-        character.name.append(info.name);
-        character.health.append(info.health);
-        character.pic.attr('src', info.pic);
-        character.main
-            .append(
-            character.name,
-            character.pic,
+        character.name.append(
+            info.name,
             character.health
-            )
-            .addClass('col-xs-12 col-sm-3 eagle');
+        )
+            .addClass('col-xs-6 col-sm-12')
+            .attr('id', eagle + 'Name');
 
-        // character.addClass('col-xs-12 col-sm-3 eagle')
-        // character.append('<h1>' + info.name + '</h1>');
-        // character.append('<img src="' + info.pic + '" id="characterPic">');
+        character.health.append(info.health);
+        character.pic
+            .attr('src', info.pic)
+            .attr('id', eagle + 'Pic')
+            .addClass('col-xs-6 col-sm-12')
+            .click(function () {
+                setupFight(eagle);
+            });
+
+        character.holder.append(
+            character.name,
+            character.pic
+        )
+            .addClass('col-xs-6 col-sm-3')
+            .attr('id', eagle + 'Holder');
+
         console.log(info.name);
-        $('#characters').append(character.main);
+        $('#characters').append(character.holder);
+
     })
 }
 
 $(document).ready(function () {
-    buildEagle();
+    chooseEagle();
 
 });
