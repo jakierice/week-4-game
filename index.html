@@ -6,36 +6,47 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Week 4 Game</title>
     <link rel="stylesheet" href="assets/css/reset.css">
-    <link rel="stylesheet" href="assets/css/style.css">
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
         crossorigin="anonymous">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
 </head>
 
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                <div class="row" id="characters">
-                    <!--<div class="col-xs-3"><img src="assets/images/glenn_fry.jpg"></div>
-                    <div class="col-xs-3"><img src="assets/images/don_henley.jpg"></div>
-                    <div class="col-xs-3"><img src="assets/images/joe_walsh.jpg"></div>
-                    <div class="col-xs-3"><img src="assets/images/don_felder.jpg"></div>-->
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-4">
-
-            </div>
-            <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-4">
+            <div class="col-xs-12" id="characters">
 
             </div>
         </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-4" id="enemies">
+                <div class="row" id="currentEnemy"></div>
+                <div class="row" id="remainingEnemies"></div>
+                <div class="row" id="defeatedEnemies"></div>
+            </div>
+            <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-4" id="stats">
+                <div class="row" id="health"></div>
+                <div class="row" id="attack"></div>
+                <div class="row" id="strength"></div>
+            </div>
+        </div>
     </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+
+    <!--Main game javascript file-->
+    <script src="assets/js/game.js"></script>
+
 </body>
 
 </html>
