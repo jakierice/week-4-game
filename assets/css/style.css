@@ -66,7 +66,7 @@ h4 {
     padding: 10px;
 }
 
-#defenderStats h2 {
+#defenderStats h2, #attackerHealth h2, #attackerAttack h2 {
     text-align: left;
     font-family: 'Audiowide', cursive;
     border-bottom: 1px solid white;

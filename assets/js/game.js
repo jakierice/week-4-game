@@ -62,6 +62,7 @@ function chooseEagle() {
             .click(function () {
                 setupFight(eagle);
                 fighters['attacker'] = info;
+                addAttackerStats();
             });
 
         character.holder.append(
@@ -118,7 +119,6 @@ function setupFight(chosenEagle) {
                 .addClass('col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-12');
 
             $('#' + eagle + 'Health').hide();
-
             // add non-selected characters to new enemiesHolder area of page
         } else {
             enemies.push(eagle);
@@ -146,20 +146,8 @@ function chooseEnemy(chosenEnemy, enemies) {
     var currentEnemy = $('<div class="row" id="currentEnemy"></div>');
     var attackButton = $('<button class="btn col-xs-12" id="attackButton">ATTACK!</button>');
     attackButton.click(function () {
-        attack();
+        fight();
     })
-
-    var defenderStats = $('<div class="col-xs-7" id="defenderStats"><h1>Stats</h1></div>');
-    var defenderHealth = $('<div class="col-xs-12" id="defenderHealth"></div>');
-    var defenderCounter = $('<div class="col-xs-12" id="defenderCounter"></div>');
-
-    var attackerStats = $('<div class="col-xs-7" id="attackerStats"><h1>Stats</h1></div>');
-    var attackerHealth = $('<div class="col-xs-12" id="attackerHealth"></div>');
-    var attackerCounter = $('<div class="col-xs-12" id="attackerCounter"></div>');
-
-    $(currentEnemy).append(defenderStats);
-    $(defenderStats).append(defenderHealth);
-    $(defenderStats).append(defenderCounter);
 
     $('#vs').append(attackButton);
 
@@ -172,7 +160,6 @@ function chooseEnemy(chosenEnemy, enemies) {
         remainingEnemies
     );
 
-
     $.each(enemies, function (index, enemy) {
         $('#' + enemy + 'Pic').off();
 
@@ -182,13 +169,7 @@ function chooseEnemy(chosenEnemy, enemies) {
                 .removeClass()
                 .addClass('col-xs-5');
             $('#' + enemy + 'Health').hide();
-
-            $(currentEnemy).append(defenderStats);
-            $(defenderStats).append(defenderHealth);
-            $(defenderStats).append(defenderCounter);
-
-            // $('#currentEnemy').append(attackButton);
-
+            addDefenderStats();
         } else {
             $('#' + enemy + 'Name').hide();
             $('#' + enemy + 'Health').hide();
@@ -200,7 +181,29 @@ function chooseEnemy(chosenEnemy, enemies) {
     });
 };
 
-function attack() {
+function addAttackerStats() {
+    var attackerHealth = $('<div class="col-xs-12" id="attackerHealth"><h2>Health: ' + fighters.attacker.health + '</h2></div>');
+    var attackerAttack = $('<div class="col-xs-12" id="attackerAttack"><h2>Attack Power: ' + fighters.attacker.attack + '</h2></div>');
+    $('#chosenEagle').append(
+        attackerHealth,
+        attackerAttack
+    );
+};
+
+function addDefenderStats() {
+
+    var defenderStats = $('<div class="col-xs-7" id="defenderStats"><h1>Stats</h1></div>');
+        $('#currentEnemy').append(defenderStats);
+    var defenderHealth = $('<div class="col-xs-12" id="defenderHealth"><h2>Health: ' + fighters.defender.health + '</h2></div>');
+    var defenderCounter = $('<div class="col-xs-12" id="defenderCounter"><h2>Counter Attack ' + fighters.defender.counter + '</h2></div>');
+    defenderStats.append(
+        defenderHealth,
+        defenderCounter
+    );
+
+};
+
+function fight() {
 
     var attacker = fighters.attacker;
     var defender = fighters.defender;
@@ -208,14 +211,16 @@ function attack() {
     console.log(attacker.health);
 
     attacker.health -= defender.counter;
+    attacker.attack += 10;
+
     console.log(attacker.health);
-    $('#attackerHealth').html('<h2>' + attacker.health + '</h2>');
+    $('#attackerHealth').html('<h2>Health: ' + attacker.health + '</h2>');
+    $('#attackerAttack').html('<h2>Attack Power: ' + attacker.attack + '</h2>');
 
     defender.health -= attacker.attack;
     console.log(defender.health);
     $('#defenderHealth').html('<h2>Health: ' + defender.health + '</h2>');
     $('#defenderCounter').html('<h2>Counter Attack: ' + defender.counter + '</h2>');
-
 
 }
 
