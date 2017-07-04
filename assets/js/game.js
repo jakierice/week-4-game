@@ -1,3 +1,4 @@
+// define characters object for each Eagles band member
 var eagles = {
     glennFrey: {
         name: "Glenn Frey",
@@ -29,66 +30,22 @@ var eagles = {
     }
 }
 
-function setupFight(attacker) {
-    console.log(attacker);
-    // $('#donHenley').hide();
-    $.each(eagles, function (eagle, info) {
-        if (eagle !== attacker) {
-            $('#' + eagle + 'Holder').appendTo('#remainingEnemies');
-        } else {
-            var chosenCharacter = {
-                holder: $('<div></div>'),
-                name: $('<h1></h1>'),
-                health: $('<h4></h4>'),
-                attack: $('<h2></h2>'),
-                pic: $('<img>')
-            }
-
-            // $('#' + eagle).removeClass('col-xs-6 col-sm-3');
-            // $('#' + eagle).addClass('col-xs-12');
-
-            // $('#' + eagle).children().empty();
-
-            // chosenCharacter.name.append(
-            //     attacker.name,
-            //     chosenCharacter.health,
-            //     chosenCharacter.attack
-            // )
-            //     .removeClass('col-xs-6 col-sm-12')
-            //     .addClass('col-xs-6');
-
-            // chosenCharacter.health.append(attacker.health);
-            // chosenCharacter.pic
-            //     .attr('src', attacker.pic)
-            //     .addClass('col-xs-6')
-
-            // chosenCharacter.holder.append(
-            //     chosenCharacter.name,
-            //     chosenCharacter.pic
-            // )
-            //     .addClass('col-xs-6 eagle');
-
-            $('#' + eagle + 'Holder').removeClass('col-xs-6 col-sm-3');
-            $('#' + eagle + 'Holder').addClass('col-xs-12');
-
-            $('#' + eagle + 'Name').toggleClass('col-xs-6');
-            $('#' + eagle + 'Pic').toggleClass('col-xs-6');
-
-            $('#characters').append(chosenCharacter.holder)
-                .toggleClass('col-xs-6');
-        }
-    });
-
-
+// define game instructions object
+var instructions = {
+    first: "Choose your character",
+    second: "Choose your first enemy",
+    third: "ATTACK!"
 }
 
 function chooseEagle() {
 
+    $('#instructions').append('<h1>' + instructions.first + '</h1>');
+
     $.each(eagles, function (eagle, info) {
         var character = {
-            holder: $('<div></div>'),
+            holder: $('<div class="col-xs-6 col-sm-offset-0 col-sm-3" id="' + eagle + 'Holder"></div>'),
             name: $('<h1></h1>'),
-            health: $('<h4></h4>'),
+            health: $('<h5>HP: ' + info.health + '</h5>'),
             pic: $('<img>')
         }
 
@@ -96,14 +53,11 @@ function chooseEagle() {
             info.name,
             character.health
         )
-            .addClass('col-xs-6 col-sm-12')
             .attr('id', eagle + 'Name');
 
-        character.health.append(info.health);
         character.pic
             .attr('src', info.pic)
             .attr('id', eagle + 'Pic')
-            .addClass('col-xs-6 col-sm-12')
             .click(function () {
                 setupFight(eagle);
             });
@@ -112,13 +66,63 @@ function chooseEagle() {
             character.name,
             character.pic
         )
-            .addClass('col-xs-6 col-sm-3')
-            .attr('id', eagle + 'Holder');
+            // .addClass('col-xs-6 col-sm-offset-0 col-sm-3')
+            // .attr('id', eagle + 'Holder');
 
         console.log(info.name);
         $('#characters').append(character.holder);
-
     })
+}
+
+function setupFight(attacker) {
+
+    $('#instructions')
+        .empty()
+        .append('<h1>' + instructions.second + '</h1>');
+
+    console.log(attacker);
+    // create title and holding area for enemy choices
+    var enemiesTitle = $('<div class="row" id="enemiesTitle"><h3>Enemies</h3></div>');
+    var enemiesHolder = $('<div></div>');
+    enemiesHolder.addClass('col-xs-12 col-sm-6')
+        .append(enemiesTitle);
+    
+    // create VS tag to seperate selected character and enemies
+    var vs = $('<div><h2>VS</h2></div>');
+    vs.addClass('col-xs-12 col-sm-3')
+        .attr('id', 'vs');
+
+    // add VS seperator and enemies area to characters box
+    $('#characters').append(
+        vs,
+        enemiesHolder
+    );
+
+    $.each(eagles, function (eagle, info) {
+        // remove setupFight() click function from eagle pic
+        $('#' + eagle + 'Pic').off();
+
+        // reformat selected character's holder and add attack power
+        if (attacker === eagle) {
+            $('#' + eagle + 'Holder')
+                .addClass('col-xs-offset-3');
+
+            $('#' + eagle + 'Name').append('<h5>Attack: ' + info.attack + '</h5>');
+        // add non-selected characters to new enemiesHolder area of page
+        } else {
+            $('#' + eagle + 'Holder')
+                .appendTo(enemiesHolder)
+                // remove old layout
+                .removeClass('col-xs-offset-3 col-xs-6 col-sm-3')
+                // add new layout
+                .addClass('col-xs-4');
+
+            // add new chooseEnemy() function to all enemies' pictures
+            $('#' + eagle + 'Pic').click(function() {
+                beginFight(eagle);
+            });
+        }
+    });
 }
 
 $(document).ready(function () {
