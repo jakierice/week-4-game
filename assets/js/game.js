@@ -37,6 +37,8 @@ var instructions = {
     third: "ATTACK!"
 }
 
+var fighters = {};
+
 function chooseEagle() {
 
     $('#instructions').append('<h1>' + instructions.first + '</h1>');
@@ -44,8 +46,8 @@ function chooseEagle() {
     $.each(eagles, function (eagle, info) {
         var character = {
             holder: $('<div class="col-xs-6 col-sm-offset-0 col-sm-3" id="' + eagle + 'Holder"></div>'),
-            name: $('<h1></h1>'),
-            health: $('<h5>HP: ' + info.health + '</h5>'),
+            name: $('<h1 id=' + eagle + 'Name></h1>'),
+            health: $('<h5 id=' + eagle + 'Health>HP: ' + info.health + '</h5>'),
             pic: $('<img>')
         }
 
@@ -53,47 +55,51 @@ function chooseEagle() {
             info.name,
             character.health
         )
-            .attr('id', eagle + 'Name');
 
         character.pic
             .attr('src', info.pic)
             .attr('id', eagle + 'Pic')
             .click(function () {
                 setupFight(eagle);
+                fighters['attacker'] = info;
             });
 
         character.holder.append(
             character.name,
             character.pic
         )
-            // .addClass('col-xs-6 col-sm-offset-0 col-sm-3')
-            // .attr('id', eagle + 'Holder');
 
-        console.log(info.name);
         $('#characters').append(character.holder);
     })
 }
 
-function setupFight(attacker) {
+function setupFight(chosenEagle) {
 
     $('#instructions')
         .empty()
         .append('<h1>' + instructions.second + '</h1>');
 
-    console.log(attacker);
+    var attackerHolder = $('<div class="col-xs-12 col-sm-3" id="chosenEagle"></div>');
+    var attackerTitle = $('<div class="row title" id="attackerTitle"><h3>Attacker</h3></div>');
+
+    attackerHolder.append(attackerTitle);
+
+    // create empty array for storing enemies
+    var enemies = [];
+
     // create title and holding area for enemy choices
-    var enemiesTitle = $('<div class="row" id="enemiesTitle"><h3>Enemies</h3></div>');
-    var enemiesHolder = $('<div></div>');
-    enemiesHolder.addClass('col-xs-12 col-sm-6')
-        .append(enemiesTitle);
-    
+    var enemiesHolder = $('<div class="col-xs-12 col-sm-6" id="enemiesHolder"></div>');
+    var enemiesTitle = $('<div class="row title" id="enemiesTitle"><h3>Enemies</h3></div>');
+
+    // enemiesHolder.addClass('col-xs-12 col-sm-6')
+    enemiesHolder.append(enemiesTitle);
+
     // create VS tag to seperate selected character and enemies
-    var vs = $('<div><h2>VS</h2></div>');
-    vs.addClass('col-xs-12 col-sm-3')
-        .attr('id', 'vs');
+    var vs = $('<div class="col-xs-12 col-sm-3" id="vs"><h2>VS</h2></div>');
 
     // add VS seperator and enemies area to characters box
     $('#characters').append(
+        attackerHolder,
         vs,
         enemiesHolder
     );
@@ -103,29 +109,116 @@ function setupFight(attacker) {
         $('#' + eagle + 'Pic').off();
 
         // reformat selected character's holder and add attack power
-        if (attacker === eagle) {
+        if (chosenEagle === eagle) {
             $('#' + eagle + 'Holder')
-                .addClass('col-xs-offset-3');
+                .appendTo(attackerHolder);
 
-            $('#' + eagle + 'Name').append('<h5>Attack: ' + info.attack + '</h5>');
-        // add non-selected characters to new enemiesHolder area of page
+            $('#' + eagle + 'Holder')
+                .removeClass()
+                .addClass('col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-12');
+
+            $('#' + eagle + 'Health').hide();
+
+            // add non-selected characters to new enemiesHolder area of page
         } else {
+            enemies.push(eagle);
             $('#' + eagle + 'Holder')
                 .appendTo(enemiesHolder)
                 // remove old layout
-                .removeClass('col-xs-offset-3 col-xs-6 col-sm-3')
+                .removeClass()
                 // add new layout
                 .addClass('col-xs-4');
 
             // add new chooseEnemy() function to all enemies' pictures
-            $('#' + eagle + 'Pic').click(function() {
-                beginFight(eagle);
+            $('#' + eagle + 'Pic').click(function () {
+                fighters['defender'] = info;
+                chooseEnemy(eagle, enemies);
             });
         }
     });
 }
 
+function chooseEnemy(chosenEnemy, enemies) {
+    $('#instructions')
+        .empty()
+        .append('<h1>' + instructions.third + '</h1>');
+
+    var currentEnemy = $('<div class="row" id="currentEnemy"></div>');
+    var attackButton = $('<button class="btn col-xs-12" id="attackButton">ATTACK!</button>');
+    attackButton.click(function () {
+        attack();
+    })
+
+    var defenderStats = $('<div class="col-xs-7" id="defenderStats"><h1>Stats</h1></div>');
+    var defenderHealth = $('<div class="col-xs-12" id="defenderHealth"></div>');
+    var defenderCounter = $('<div class="col-xs-12" id="defenderCounter"></div>');
+
+    var attackerStats = $('<div class="col-xs-7" id="attackerStats"><h1>Stats</h1></div>');
+    var attackerHealth = $('<div class="col-xs-12" id="attackerHealth"></div>');
+    var attackerCounter = $('<div class="col-xs-12" id="attackerCounter"></div>');
+
+    $(currentEnemy).append(defenderStats);
+    $(defenderStats).append(defenderHealth);
+    $(defenderStats).append(defenderCounter);
+
+    $('#vs').append(attackButton);
+
+    $('#enemiesHolder').append(currentEnemy);
+
+    var remainingTitle = $('<div class="row title" id="remainingTitle"><h6>Enemies Left</h6></div>');
+    var remainingEnemies = $('<div class="row" id="remainingEnemies"></div>');
+    $('#enemiesHolder').append(
+        remainingTitle,
+        remainingEnemies
+    );
+
+
+    $.each(enemies, function (index, enemy) {
+        $('#' + enemy + 'Pic').off();
+
+        if (enemy === chosenEnemy) {
+            $('#' + enemy + 'Holder').appendTo(currentEnemy);
+            $('#' + enemy + 'Holder')
+                .removeClass()
+                .addClass('col-xs-5');
+            $('#' + enemy + 'Health').hide();
+
+            $(currentEnemy).append(defenderStats);
+            $(defenderStats).append(defenderHealth);
+            $(defenderStats).append(defenderCounter);
+
+            // $('#currentEnemy').append(attackButton);
+
+        } else {
+            $('#' + enemy + 'Name').hide();
+            $('#' + enemy + 'Health').hide();
+            $('#' + enemy + 'Holder')
+                .appendTo(remainingEnemies)
+                .removeClass()
+                .addClass('col-xs-offset-2 col-xs-3 remain');
+        }
+    });
+};
+
+function attack() {
+
+    var attacker = fighters.attacker;
+    var defender = fighters.defender;
+
+    console.log(attacker.health);
+
+    attacker.health -= defender.counter;
+    console.log(attacker.health);
+    $('#attackerHealth').html('<h2>' + attacker.health + '</h2>');
+
+    defender.health -= attacker.attack;
+    console.log(defender.health);
+    $('#defenderHealth').html('<h2>Health: ' + defender.health + '</h2>');
+    $('#defenderCounter').html('<h2>Counter Attack: ' + defender.counter + '</h2>');
+
+
+}
+
 $(document).ready(function () {
     chooseEagle();
-
 });
