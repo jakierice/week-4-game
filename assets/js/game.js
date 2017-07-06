@@ -10,8 +10,8 @@ var eagles = {
     donHenley: {
         name: "Don Henley",
         health: 100,
-        attack: 20,
-        counter: 30,
+        attack: 40,
+        counter: 20,
         pic: "assets/images/don_henley.jpg"
     },
     joeWalsh: {
@@ -25,7 +25,7 @@ var eagles = {
         name: "Don Felder",
         health: 140,
         attack: 20,
-        counter: 15,
+        counter: 10,
         pic: "assets/images/don_felder.jpg"
     }
 }
