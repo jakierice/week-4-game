@@ -17,14 +17,14 @@ var eagles = {
     joeWalsh: {
         name: "Joe Walsh",
         health: 80,
-        attack: 10,
-        counter: 25,
+        attack: 35,
+        counter: 15,
         pic: "assets/images/joe_walsh.jpg"
     },
     donFelder: {
         name: "Don Felder",
         health: 140,
-        attack: 10,
+        attack: 20,
         counter: 15,
         pic: "assets/images/don_felder.jpg"
     }
@@ -159,7 +159,6 @@ var battle = {
         ui.defenderStats.append(ui.defenderCounter);
         ui.defenderHealth.html('<h3>Health: ' + fighters.defender.health + '</h3>');
         ui.defenderCounter.html('<h3>Counter: ' + fighters.defender.counter + '</h3>');
-
     },
     setupRemainingEnemies: function () {
         ui.enemiesHolder.append(ui.remainingEnemies);
@@ -190,13 +189,28 @@ var battle = {
     fight: function () {
         if (fighters.attacker.health > 0) {
             if (fighters.defender.health <= 0) {
+                // ui.attackButton.off();
                 battle.defeatEnemy();
-            } else if (enemiesCounter <= 0) {
-                battle.win();
             }
         } else {
             battle.lose();
         }
+
+        if (enemiesCounter === 0) {
+            battle.win();
+        }
+
+
+        // while (fighters.attacker.health > 0) {
+        //     if (enemiesCounter <= 0) {
+        //         // ui.attackButton.off();
+        //         battle.win();
+        //     } else if (fighters.defender.health <= 0) {
+        //         battle.defeatEnemy();
+        //     } else {
+                
+        //     }
+        // }
     },
     defeatEnemy: function () {
         enemiesCounter -= 1;
@@ -204,7 +218,6 @@ var battle = {
         ui.defenderHolder.empty();
         $.each(eagles, function (enemy, info) {
             if (enemy !== defender && enemy !== attacker) {
-                // console.log(enemy);
                 $('#' + enemy + 'Pic').off()
                     .click(function () {
                         fighters['defender'] = info;
